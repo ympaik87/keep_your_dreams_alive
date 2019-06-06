@@ -25,15 +25,15 @@ class DblpFilter:
             pickle.dump(self.res_dic, f)
 
     def mp_dblp_filter(self, fac):
-        dic = {}
+        _dic = {}
         for k, li in self.dblp.items():
-            dic[k] = []
+            _dic[k] = []
             for dic in li:
                 if 'author' in dic.keys():
                     author = dic['author']
                     if fac in author:
-                        dic[k].append(dic)
-        return fac, dic
+                        _dic[k].append(dic)
+        return fac, _dic
 
 
 if __name__ == "__main__":
