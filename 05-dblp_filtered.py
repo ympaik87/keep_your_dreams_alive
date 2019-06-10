@@ -14,13 +14,13 @@ class DblpFilter:
         fac_li = []
         for fac_dic in self.faculties_dic.values():
             fac_li.extend(list(fac_dic.keys()))
-        
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            res_tup_li = list(
-                tqdm(executor.map(self.mp_dblp_filter, fac_li),
-                     total=len(fac_li), desc='filtering: '))
 
+        res_tup_li = []
+        for fac in tqdm(fac_li):
+            out = self.mp_dblp_filter(fac)
+            res_tup_li.append(out)
         self.res_dic = dict(res_tup_li)
+
         with open('dblp_filtered.pickle', 'wb') as f:
             pickle.dump(self.res_dic, f)
 
@@ -39,7 +39,9 @@ class DblpFilter:
 if __name__ == "__main__":
     with open('faculties_by_interests.json', 'r') as f:
         faculties_dic = json.load(f)
+    print('json file loading is done')
     with open('../CSrankings/dblp.xml', 'r', encoding="ISO-8859-1") as f:
         dblp = xmltodict.parse(f.read())
+    print('dblp.xml file loading is done')
     db_filter = DblpFilter(faculties_dic, dblp['dblp'])
     db_filter.get_res()
